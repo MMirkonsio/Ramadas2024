@@ -7,7 +7,7 @@ const App = () => {
   const [contadores, setContadores] = useState([]);
   const [nuevoTitulo, setNuevoTitulo] = useState('');
   const [nuevoTiempo, setNuevoTiempo] = useState('');
-
+  const [confirmarEliminacion, setConfirmarEliminacion] = useState(false); // Estado de confirmación
   
   
   const agregarContador = () => {
@@ -32,9 +32,19 @@ const App = () => {
   
 
   const limpiarContadores = () => {
-    setContadores([]);
-    localStorage.removeItem('contadores');
+    if (!confirmarEliminacion) {
+      // Si el usuario aún no ha confirmado, muestra la alerta
+      const confirmacion = window.confirm('¿Estás seguro de que quieres eliminar todos los contadores?');
+      if (confirmacion) {
+        // Si el usuario confirma, elimina todos los contadores
+        setContadores([]);
+        localStorage.removeItem('contadores');
+        // Establece el estado de confirmación en verdadero para evitar clics adicionales
+        setConfirmarEliminacion(true);
+      }
+    }
   };
+  
 
   useEffect(() => {
     // Cargar datos desde localStorage
@@ -101,6 +111,7 @@ return (
         <button
           onClick={limpiarContadores}
           className="bg-red-500 hover:bg-red-700 text-white p-2 rounded ml-2"
+          disabled={confirmarEliminacion} // Deshabilita el botón si ya se confirmó
         >
           Limpiar Todo
         </button>
