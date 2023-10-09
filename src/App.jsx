@@ -39,8 +39,6 @@ const App = () => {
         // Si el usuario confirma, elimina todos los contadores
         setContadores([]);
         localStorage.removeItem('contadores');
-        // Establece el estado de confirmación en verdadero para evitar clics adicionales
-        setConfirmarEliminacion(true);
       }
     }
   };
