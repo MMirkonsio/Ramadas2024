@@ -53,7 +53,8 @@ const HomeApp = () => {
 
   useEffect(() => {
     const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
-    const contadoresFiltrados = contadoresGuardados.filter(contador => contador.userId === user.id);
+    const contadoresFiltrados = contadoresGuardados.filter(contador => contador && contador.userId === user.id);
+
     setContadores(contadoresFiltrados);
   }, [user]);
 
