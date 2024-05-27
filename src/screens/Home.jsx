@@ -13,7 +13,7 @@ const HomeApp = () => {
 
   const agregarContador = () => {
     const tiempo = parseInt(nuevoTiempo, 10);
-    if (nuevoTitulo && tiempo > 0) {
+    if (user && nuevoTitulo && tiempo > 0) { // Verificar si user no es nulo
       const nuevoContador = {
         userId: user.id,
         titulo: nuevoTitulo,
@@ -52,18 +52,10 @@ const HomeApp = () => {
   };
 
   useEffect(() => {
-    console.log("Contadores en el estado:", contadores);
-  }, [contadores]);
-  
-
-  useEffect(() => {
     const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
-    // Filtrar los contadores que están asociados al correo electrónico del usuario
     const contadoresFiltrados = contadoresGuardados.filter(contador => contador.userId === user.id);
     setContadores(contadoresFiltrados);
   }, [user]);
-  
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -94,21 +86,21 @@ const HomeApp = () => {
     <div className="flex flex-col min-h-screen">
       <header className="flex justify-between items-center p-4">
         <div className="flex flex-row">
-          <p className="text-blue-500 text-2xl font-bold">Ramadas</p>
-          <p className="text-red-500 text-2xl font-bold ml-1">2024</p>
+          <p className="text-blue-500 lg:text-2xl text-xl font-bold">Ramadas</p>
+          <p className="text-red-500 lg:text-2xl text-xl  font-bold ml-1">2024</p>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-1">
           {user && (
-            <p className="flex items-center space-x-2">
+            <p className="flex items-center gap-1">
               <img
                 src={user.user_metadata.avatar_url}
                 alt={user.user_metadata.full_name}
                 className="w-8 h-8 rounded-full"
               />
-              <span className='font-semibold'>{user.user_metadata.full_name}!</span>
+              <span className='font-semibold'>{user.user_metadata.full_name}</span>
             </p>
           )}
-          <button onClick={handleSignOut} className="text-xl">
+          <button onClick={handleSignOut} style={{ fontSize: '1.5rem' }}>
             <GoSignOut />
           </button>
         </div>
