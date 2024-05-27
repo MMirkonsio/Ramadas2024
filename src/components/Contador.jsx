@@ -8,6 +8,8 @@ const Contador = ({ userId, titulo, minutos, segundos, onEliminar }) => {
   const [tiempo, setTiempo] = useState({ minutos, segundos });
   const [estado, setEstado] = useState('Pendiente');
   const { user } = UserAuth();
+  const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
+  const contadoresFiltrados = contadoresGuardados.filter(contador => contador.userId === userId);
 
   useEffect(() => {
     const interval = setInterval(() => {

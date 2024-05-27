@@ -15,7 +15,7 @@ const HomeApp = () => {
     const tiempo = parseInt(nuevoTiempo, 10);
     if (user && nuevoTitulo && tiempo > 0) { // Verificar si user no es nulo
       const nuevoContador = {
-        userId: user.id,
+        userId: user.id ,
         titulo: nuevoTitulo,
         minutos: tiempo,
         segundos: 0
@@ -27,7 +27,7 @@ const HomeApp = () => {
       const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
       localStorage.setItem('contadores', JSON.stringify([...contadoresGuardados, nuevoContador]));
     }
-  };
+    };
 
   const eliminarContador = (index) => {
     const confirmacion = window.confirm('¿Estás seguro de que deseas eliminar este contador?');
@@ -44,19 +44,20 @@ const HomeApp = () => {
   const limpiarContadores = () => {
     const confirmacion = window.confirm('¿Estás seguro de que quieres eliminar todos los contadores?');
     if (confirmacion) {
+      // Obtener todos los contadores guardados desde el almacenamiento local
+      const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
+      // Filtrar los contadores mostrados en la interfaz de usuario por el userId del usuario actual
       const contadoresFiltrados = contadores.filter(contador => contador.userId === user.id);
+      // Actualizar los contadores mostrados en la interfaz de usuario y en el almacenamiento local
       setContadores(contadoresFiltrados);
-      localStorage.setItem('contadores', JSON.stringify(contadoresFiltrados));
+      localStorage.setItem('contadores', JSON.stringify(contadoresGuardados));
       setConfirmarEliminacion(true);
     }
   };
+  
+  
 
-  useEffect(() => {
-    const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
-    const contadoresFiltrados = contadoresGuardados.filter(contador => contador && contador.userId === user.id);
 
-    setContadores(contadoresFiltrados);
-  }, [user]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -142,12 +143,14 @@ const HomeApp = () => {
         <AnimatePresence>
           {contadores.map((contador, index) => (
             <AnimatedListItem
-              key={index}
-              titulo={contador.titulo}
-              minutos={contador.minutos}
-              segundos={contador.segundos}
-              onEliminar={() => eliminarContador(index)}
-            />
+            key={index}
+            userId={user.id} // Pasar el userId del usuario actual
+            titulo={contador.titulo}
+            minutos={contador.minutos}
+            segundos={contador.segundos}
+            onEliminar={() => eliminarContador(index)}
+          />
+          
           ))}
         </AnimatePresence>
       </main>
