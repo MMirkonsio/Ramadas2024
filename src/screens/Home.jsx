@@ -3,9 +3,7 @@ import { UserAuth } from '../context/AuthContext';
 import AnimatedListItem from '../components/magicui/animated-list';
 import { AnimatePresence } from 'framer-motion';
 import { GoSignOut } from "react-icons/go";
-import Cookies from 'js-cookie';
 
-  
 const HomeApp = () => {
   const { user, handleSignOut } = UserAuth();
   const [contadores, setContadores] = useState([]);
@@ -13,46 +11,48 @@ const HomeApp = () => {
   const [nuevoTiempo, setNuevoTiempo] = useState('');
   const [confirmarEliminacion, setConfirmarEliminacion] = useState(false);
 
-  useEffect(() => {
-    // Recuperar contadores guardados desde la cookie
-    const contadoresGuardados = JSON.parse(Cookies.get('contadores') || '[]');
-    setContadores(contadoresGuardados);
-  }, []);
-
-
-  // Definir nuevosContadores antes de usarlo
   const agregarContador = () => {
     const tiempo = parseInt(nuevoTiempo, 10);
-    if (nuevoTitulo && tiempo > 0 && user) {
+    if (nuevoTitulo && tiempo > 0) {
       const nuevoContador = { titulo: nuevoTitulo, minutos: tiempo, segundos: 0 };
-      const nuevosContadores = [...contadores, nuevoContador];
-      setContadores(nuevosContadores);
-      // Guardar nuevos contadores en la cookie
-      Cookies.set('contadores', JSON.stringify(nuevosContadores));
+      setContadores([...contadores, nuevoContador]);
       setNuevoTitulo('');
       setNuevoTiempo('');
+
+      const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
+      localStorage.setItem('contadores', JSON.stringify([...contadoresGuardados, nuevoContador]));
     }
   };
 
-  const eliminarContador = (index) => {
-    const nuevosContadores = [...contadores];
-    nuevosContadores.splice(index, 1);
-    setContadores(nuevosContadores);
-    // Actualizar la cookie después de eliminar un contador
-    Cookies.set('contadores', JSON.stringify(nuevosContadores));
+  const eliminarContador = (userId, index) => {
+    const confirmacion = window.confirm('¿Estás seguro de que deseas eliminar este contador?');
+    if (confirmacion) {
+      // Implementa la lógica para eliminar el contador asociado al usuario con el ID userId
+      // Puedes usar el ID del usuario para distinguir los contadores de cada usuario
+      const nuevosContadores = [...contadores];
+      nuevosContadores.splice(index, 1);
+      setContadores(nuevosContadores);
+      // Además, puedes eliminar el contador del almacenamiento local si es necesario
+    }
   };
+  
+  
 
   const limpiarContadores = () => {
     if (!confirmarEliminacion) {
       const confirmacion = window.confirm('¿Estás seguro de que quieres eliminar todos los contadores?');
       if (confirmacion) {
         setContadores([]);
-        Cookies.remove('contadores'); // Remover la cookie al limpiar los contadores
+        localStorage.removeItem('contadores');
         setConfirmarEliminacion(true);
       }
     }
   };
 
+  useEffect(() => {
+    const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
+    setContadores(contadoresGuardados);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -74,6 +74,11 @@ const HomeApp = () => {
     return () => clearInterval(interval);
   }, [contadores]);
 
+  useEffect(() => {
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('contadores', JSON.stringify(contadores));
+    });
+  }, [contadores]);
  
 
   return (
