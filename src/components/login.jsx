@@ -1,18 +1,23 @@
 import { UserAuth } from "../context/AuthContext";
-import React from 'react';
+import { FcGoogle } from "react-icons/fc";
+
 
 const Login = () => {
     const { handleSignInWithGoogle } = UserAuth();
 
     return (
-        <div className="login-container">
-            <h1>Iniciar Sesión</h1>
-            <button
-                onClick={handleSignInWithGoogle}
-                className="bg-red-500 hover:bg-red-700 text-white p-2 rounded"
-            >
-                Iniciar sesión con Google
-            </button>
+        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+            <div className="bg-white p-6 rounded shadow-md text-center">
+                <p className="text-blue-500 text-5xl font-bold">Ramadas</p>
+                <p className="text-red-500 text-5xl font-bold ml-1">2024</p>
+                <button
+                    onClick={handleSignInWithGoogle}
+                    className="bg-neutral-900 hover:bg-neutral-700 font-medium text-white py-2 px-4 rounded flex flex-row gap-2 items-center mt-4"
+                    
+                >
+                    Iniciar sesión con <FcGoogle style={{ fontSize: '2rem' }}/>                    
+                </button>
+            </div>
         </div>
     );
 };

@@ -1,0 +1,11 @@
+/* En tu archivo CSS o dentro de una etiqueta <style> */
+@keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  
+  .blink {
+    animation: blink 1s infinite;
+  }
+  

@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { CiStopwatch, CiTrash } from 'react-icons/ci';
-
+import "../components/contador.css"
 const Contador = ({ titulo, minutos, segundos, onEliminar }) => {
-  const [user, setUser] = useState(null);
   const [tiempo, setTiempo] = useState({ minutos, segundos });
   const [estado, setEstado] = useState('Pendiente');
 
@@ -25,8 +24,8 @@ const Contador = ({ titulo, minutos, segundos, onEliminar }) => {
   }, [tiempo]);
 
   return (
-    <div className="border-2 p-4 my-4 flex flex-col items-center rounded-lg">
-      <div className="block min-w-[350px] mb-2 gap-8">
+    <div className={`border-2 p-4 my-4 flex flex-col items-center rounded-lg ${estado === 'Listo' ? 'blink' : ''}`}>
+      <div className="block min-w-[300px] mb-2 gap-8">
         <h2 className="text-4xl font-bold break-words">{titulo}</h2>
         <div className="flex items-center text-3xl">
           <CiStopwatch className="mr-2" />
@@ -43,14 +42,13 @@ const Contador = ({ titulo, minutos, segundos, onEliminar }) => {
           {estado}
         </p>
         <button
-          onClick={() => onEliminar(user)} // Pasar el ID del usuario al eliminar
+          onClick={onEliminar}
           className="text-red-500 hover:text-red-700"
-          style={{ fontSize: '3rem' }} // Ajusta el tamaño del botón de eliminación aquí
+          style={{ fontSize: '3rem' }}
         >
           <CiTrash />
         </button>
       </div>
-
     </div>
   );
 };

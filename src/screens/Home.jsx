@@ -106,7 +106,7 @@ const HomeApp = () => {
       </header>
       <main className="flex flex-col items-center justify-center flex-grow p-4">
         <div>
-          <h1 className='font-bold text-5xl flex flex-col items-center'>SISTEMA <p>CONTADOR</p></h1>
+          <h1 className='font-bold text-5xl flex flex-col items-center'>SISTEMA <p>CONTADOR</p>DE NIÑOS</h1>
         </div>
         <div className="lg:w-2/6 sm:w-full my-4 flex flex-col gap-3">
           <input
@@ -134,7 +134,7 @@ const HomeApp = () => {
             className="bg-red-500 hover:bg-red-700 text-white p-2 rounded"
             disabled={confirmarEliminacion}
           >
-            Limpiar Todo
+            Borrar Todo
           </button>
         </div>
         <AnimatePresence>
