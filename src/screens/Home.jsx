@@ -14,7 +14,12 @@ const HomeApp = () => {
   const agregarContador = () => {
     const tiempo = parseInt(nuevoTiempo, 10);
     if (nuevoTitulo && tiempo > 0) {
-      const nuevoContador = { titulo: nuevoTitulo, minutos: tiempo, segundos: 0 };
+      const nuevoContador = {
+        userId: user.id,
+        titulo: nuevoTitulo,
+        minutos: tiempo,
+        segundos: 0
+      };
       setContadores([...contadores, nuevoContador]);
       setNuevoTitulo('');
       setNuevoTiempo('');
@@ -24,45 +29,50 @@ const HomeApp = () => {
     }
   };
 
-  const eliminarContador = (userId, index) => {
+  const eliminarContador = (index) => {
     const confirmacion = window.confirm('¿Estás seguro de que deseas eliminar este contador?');
     if (confirmacion) {
-      // Implementa la lógica para eliminar el contador asociado al usuario con el ID userId
-      // Puedes usar el ID del usuario para distinguir los contadores de cada usuario
-      const nuevosContadores = [...contadores];
-      nuevosContadores.splice(index, 1);
+      const nuevosContadores = contadores.filter((_, i) => i !== index);
       setContadores(nuevosContadores);
-      // Además, puedes eliminar el contador del almacenamiento local si es necesario
+
+      const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
+      const nuevosContadoresGuardados = contadoresGuardados.filter((_, i) => i !== index);
+      localStorage.setItem('contadores', JSON.stringify(nuevosContadoresGuardados));
     }
   };
-  
-  
 
   const limpiarContadores = () => {
-    if (!confirmarEliminacion) {
-      const confirmacion = window.confirm('¿Estás seguro de que quieres eliminar todos los contadores?');
-      if (confirmacion) {
-        setContadores([]);
-        localStorage.removeItem('contadores');
-        setConfirmarEliminacion(true);
-      }
+    const confirmacion = window.confirm('¿Estás seguro de que quieres eliminar todos los contadores?');
+    if (confirmacion) {
+      const contadoresFiltrados = contadores.filter(contador => contador.userId === user.id);
+      setContadores(contadoresFiltrados);
+      localStorage.setItem('contadores', JSON.stringify(contadoresFiltrados));
+      setConfirmarEliminacion(true);
     }
   };
 
   useEffect(() => {
+    console.log("Contadores en el estado:", contadores);
+  }, [contadores]);
+  
+
+  useEffect(() => {
     const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
-    setContadores(contadoresGuardados);
-  }, []);
+    // Filtrar los contadores que están asociados al correo electrónico del usuario
+    const contadoresFiltrados = contadoresGuardados.filter(contador => contador.userId === user.id);
+    setContadores(contadoresFiltrados);
+  }, [user]);
+  
+
 
   useEffect(() => {
     const interval = setInterval(() => {
       const nuevosContadores = contadores.map((contador) => {
         if (contador.minutos > 0 || contador.segundos > 0) {
           if (contador.segundos === 0) {
-            contador.minutos -= 1;
-            contador.segundos = 59;
+            return { ...contador, minutos: contador.minutos - 1, segundos: 59 };
           } else {
-            contador.segundos -= 1;
+            return { ...contador, segundos: contador.segundos - 1 };
           }
         }
         return contador;
@@ -79,7 +89,6 @@ const HomeApp = () => {
       localStorage.setItem('contadores', JSON.stringify(contadores));
     });
   }, [contadores]);
- 
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -144,11 +153,10 @@ const HomeApp = () => {
               titulo={contador.titulo}
               minutos={contador.minutos}
               segundos={contador.segundos}
-              onEliminar={() => eliminarContador(user.id, index)} // Pasar el ID del usuario
+              onEliminar={() => eliminarContador(index)}
             />
           ))}
         </AnimatePresence>
-
       </main>
     </div>
   );

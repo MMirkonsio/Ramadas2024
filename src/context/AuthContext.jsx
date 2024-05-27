@@ -10,7 +10,8 @@ export const AuthContextProvider = ({children}) => {
         try {
             const { data, error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
-              })
+                token: response.credential,
+                })
         
             if(error) throw Error("Error durante el inicio");
             return data;
@@ -29,7 +30,7 @@ export const AuthContextProvider = ({children}) => {
     useEffect(() => {
         const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
             console.log("evento:", session);
-            if(session==null){
+            if(!supabase.auth.user()){
                 navigate("/login", { replace: true });
                 
             }
@@ -41,7 +42,9 @@ export const AuthContextProvider = ({children}) => {
         return () =>{
             authListener.subscription;
         }
-      }, []);
+      }, [navigate]);
+
+      
     
     return (
         <AuthContext.Provider value={{user, setUser, handleSignInWithGoogle, handleSignOut}}>
