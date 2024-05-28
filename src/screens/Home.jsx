@@ -16,7 +16,6 @@ const HomeApp = () => {
     setContadores(contadoresGuardados);
   }, []);
 
-
   const agregarContador = () => {
     const tiempo = parseInt(nuevoTiempo, 10);
     if (user && nuevoTitulo && tiempo > 0) {
@@ -29,13 +28,11 @@ const HomeApp = () => {
       setContadores([...contadores, nuevoContador]);
       setNuevoTitulo('');
       setNuevoTiempo('');
-  
+
       const contadoresGuardados = JSON.parse(localStorage.getItem('contadores')) || [];
       localStorage.setItem('contadores', JSON.stringify([...contadoresGuardados, nuevoContador]));
     }
   };
-  
-  
 
   const eliminarContador = (index) => {
     const confirmacion = window.confirm('¿Estás seguro de que deseas eliminar este contador?');
@@ -52,17 +49,12 @@ const HomeApp = () => {
   const limpiarContadores = () => {
     const confirmacion = window.confirm('¿Estás seguro de que quieres eliminar todos los contadores?');
     if (confirmacion && user) {
-      // Filtrar los contadores guardados por el userId del usuario actual
-      const contadoresFiltrados = contadores.filter(contador => contador.userId === user.id);
-      // Actualizar los contadores mostrados en la interfaz de usuario y en el almacenamiento local
+      const contadoresFiltrados = contadores.filter(contador => contador.userId !== user.id);
       setContadores(contadoresFiltrados);
       localStorage.setItem('contadores', JSON.stringify(contadoresFiltrados));
       setConfirmarEliminacion(true);
     }
   };
-  
-
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -83,14 +75,16 @@ const HomeApp = () => {
     return () => clearInterval(interval);
   }, [contadores]);
 
-
+  if (!user) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
       <header className="flex justify-between items-center p-4">
         <div className="flex flex-row">
           <p className="text-blue-500 lg:text-2xl text-xl font-bold">Ramadas</p>
-          <p className="text-red-500 lg:text-2xl text-xl  font-bold ml-1">2024</p>
+          <p className="text-red-500 lg:text-2xl text-xl font-bold ml-1">2024</p>
         </div>
         <div className="flex items-center gap-1">
           {user && (
@@ -142,19 +136,19 @@ const HomeApp = () => {
           </button>
         </div>
         <AnimatePresence>
-    {user && contadores
-      .filter(contador => contador.userId === user.id)
-      .map((contador, index) => (
-        <AnimatedListItem
-          key={index}
-          userId={user.id}
-          titulo={contador.titulo}
-          minutos={contador.minutos}
-          segundos={contador.segundos}
-          onEliminar={() => eliminarContador(index)}
-        />
-      ))}
-  </AnimatePresence>
+          {contadores
+            .filter(contador => contador.userId === user.id)
+            .map((contador, index) => (
+              <AnimatedListItem
+                key={index}
+                userId={user.id}
+                titulo={contador.titulo}
+                minutos={contador.minutos}
+                segundos={contador.segundos}
+                onEliminar={() => eliminarContador(index)}
+              />
+            ))}
+        </AnimatePresence>
       </main>
     </div>
   );
