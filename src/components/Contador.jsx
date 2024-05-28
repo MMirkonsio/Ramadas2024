@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { CiStopwatch, CiTrash } from "react-icons/ci";
+import { CiStopwatch } from "react-icons/ci";
 import "../components/contador.css";
 import { UserAuth } from "../context/AuthContext";
+import { MdDelete } from "react-icons/md";
 
 const Contador = ({ userId, titulo, minutos, segundos, onEliminar }) => {
   const [confirmacionAbierta, setConfirmacionAbierta] = useState(false);
@@ -105,7 +106,7 @@ const Contador = ({ userId, titulo, minutos, segundos, onEliminar }) => {
           className="text-red-500 hover:text-red-700"
           style={{ fontSize: "3rem" }}
         >
-          <CiTrash />
+          <MdDelete />
         </button>
       </div>
     </div>
