@@ -23,10 +23,8 @@ export const AuthContextProvider = ({children}) => {
     
       async function handleSignOut() {
         const { error } = await supabase.auth.signOut();
-        if(error) throw Error("Error durante el cierre de sesión");
-    
-        // Limpiar el caché local
-        localStorage.clear();
+        if (error) throw Error("Error durante el cierre de sesión");
+        // No limpiar el caché local
     }
     
 
